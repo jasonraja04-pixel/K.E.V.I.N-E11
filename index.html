@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K.E.V.I.N Market Analysis</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#0b0f14;color:#e8edf2}.container{max-width:1200px;margin:auto;padding:20px}.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}h1{margin:0;font-size:26px}select{background:#151b23;color:white;border:1px solid #303945;padding:10px 14px;border-radius:8px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.card{background:#121820;border:1px solid #252e39;border-radius:12px;padding:18px}.card h2{margin-top:0;font-size:17px}.big{font-size:25px;font-weight:bold}.label{color:#8d99a8;font-size:13px;margin-bottom:5px}.value{font-size:17px;margin-bottom:14px}.zone{background:#18212b;border-radius:8px;padding:12px;margin:8px 0}.reason{padding:8px 0;border-bottom:1px solid #252e39}.score{font-size:32px;font-weight:bold}.full{grid-column:1/-1}.error{color:#ff7373}.muted{color:#8d99a8;font-size:12px}@media(max-width:800px){.grid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header"><div><h1>⚡ K.E.V.I.N</h1><small>SMC / ICT Market Analysis</small></div><select id="symbol">
+<option value="XAUUSD">XAU/USD</option><option value="XAGUSD">XAG/USD</option><option value="EURUSD">EUR/USD</option><option value="GBPUSD">GBP/USD</option><option value="USDJPY">USD/JPY</option><option value="USDCHF">USD/CHF</option><option value="USDCAD">USD/CAD</option><option value="AUDUSD">AUD/USD</option><option value="NZDUSD">NZD/USD</option><option value="EURGBP">EUR/GBP</option><option value="EURJPY">EUR/JPY</option><option value="GBPJPY">GBP/JPY</option><option value="AUDJPY">AUD/JPY</option><option value="EURAUD">EUR/AUD</option><option value="GBPAUD">GBP/AUD</option><option value="EURCHF">EUR/CHF</option><option value="GBPCHF">GBP/CHF</option><option value="AUDNZD">AUD/NZD</option><option value="NZDJPY">NZD/JPY</option><option value="CADJPY">CAD/JPY</option><option value="CHFJPY">CHF/JPY</option><option value="NAS100">NAS100</option><option value="SPX500">SPX500</option>
+</select></div>
+<div class="grid">
+<div class="card"><h2>Market Bias</h2><div class="label">4H → 1H → 15M</div><div id="bias" class="big">Loading...</div><div class="label">Setup State</div><div id="state" class="value">-</div></div>
+<div class="card"><h2>Confluence</h2><div id="score" class="score">- / 5</div><div class="label">Conditions</div><div id="conditions" class="value">Loading...</div></div>
+<div class="card"><h2>Market Price</h2><div class="label">Current Price</div><div id="price" class="big">-</div><div class="label">Last Update</div><div id="updated" class="value">-</div></div>
+<div class="card full"><h2>📍 Structural Reference Levels</h2><div class="zone"><div class="label">Potential Entry Zone</div><div id="entryZone" class="value">-</div><div id="entryType" class="muted"></div></div><div class="zone"><div class="label">Invalidation Reference</div><div id="invalidation" class="value">-</div></div><div class="zone"><div class="label">Liquidity Reference 1</div><div id="liq1" class="value">-</div></div><div class="zone"><div class="label">Liquidity Reference 2</div><div id="liq2" class="value">-</div></div><div class="zone"><div class="label">Liquidity Reference 3</div><div id="liq3" class="value">-</div></div><div class="muted">These are structural references only, not executable trade instructions.</div></div>
+<div class="card"><h2>4H Structure</h2><div class="label">Trend</div><div id="h4trend" class="value">-</div><div class="label">Last Event</div><div id="h4event" class="value">-</div><div class="label">Close</div><div id="h4close" class="value">-</div></div>
+<div class="card"><h2>1H Structure / POI</h2><div class="label">Trend</div><div id="h1trend" class="value">-</div><div class="label">Order Block</div><div id="ob" class="value">-</div><div class="label">FVG</div><div id="fvg" class="value">-</div><div class="label">OTE</div><div id="ote" class="value">-</div></div>
+<div class="card"><h2>15M Trigger</h2><div class="label">Structure</div><div id="m15trend" class="value">-</div><div class="label">Liquidity Sweep</div><div id="sweep" class="value">-</div><div class="label">Displacement</div><div id="displacement" class="value">-</div><div class="label">Close</div><div id="m15close" class="value">-</div></div>
+<div class="card full"><h2>🧠 K.E.V.I.N Analysis</h2><div id="reasons">Loading...</div></div>
+</div></div>
+<script>
+const API_BASE="https://k-e-v-i-n.onrender.com";const $=id=>document.getElementById(id);
+function fmt(v){if(v===null||v===undefined||v==="")return "-";const n=Number(v);return Number.isNaN(n)?String(v):n.toFixed(5)}
+function zone(z){if(!z)return "-";if(z.low!==undefined&&z.high!==undefined)return `${fmt(z.low)} → ${fmt(z.high)}`;return String(z)}
+function sweep(v){return v&&v.level!==undefined?`${v.type} @ ${fmt(v.level)}`:"-"}
+function update(d){const s=d.signal||{},t=d.timeframes||{},h4=t["4h"]||{},h1=t["1h"]||{},m=t["15m"]||{},r=s.references||{},ez=r.potential_entry_zone;
+$("bias").textContent=s.bias||"-";$("state").textContent=s.state||"-";$("score").textContent=`${s.confluence_score??0} / 5`;$("conditions").textContent=(s.reasons||[]).length+" analysis condition(s)";$("price").textContent=fmt(m.last_close);$("updated").textContent=d.generated_at?new Date(d.generated_at*1000).toLocaleString():"-";
+$("entryZone").textContent=zone(ez);$("entryType").textContent=ez?ez.type:"No confirmed 1H POI";$("invalidation").textContent=fmt(r.invalidation_reference);
+const ls=r.liquidity_references||[];["liq1","liq2","liq3"].forEach((id,i)=>$(id).textContent=ls[i]?`${fmt(ls[i].price)} — ${ls[i].type}`:"-");
+$("h4trend").textContent=h4.trend||"-";$("h4event").textContent=h4.last_event||"-";$("h4close").textContent=fmt(h4.last_close);$("h1trend").textContent=h1.trend||"-";$("ob").textContent=zone(h1.order_block);$("fvg").textContent=(h1.fvg_zones||[]).map(zone).join(" | ")||"-";$("ote").textContent=zone(h1.ote_zone);$("m15trend").textContent=m.trend||"-";$("sweep").textContent=sweep(m.liquidity_sweep);$("displacement").textContent=m.displacement?"Detected":"Not detected";$("m15close").textContent=fmt(m.last_close);
+const reasons=s.reasons||[];$("reasons").innerHTML=reasons.length?reasons.map(x=>`<div class="reason">• ${x}</div>`).join(""):"No complete setup conditions."}
+async function load(){try{const s=$("symbol").value;const r=await fetch(`${API_BASE}/api/signal/${s}`);if(!r.ok)throw new Error(`HTTP ${r.status}`);update(await r.json())}catch(e){$("bias").textContent="API Error";$("state").textContent=e.message;$("reasons").innerHTML='<div class="error">Unable to load market analysis.</div>'}}
+$("symbol").addEventListener("change",load);load();setInterval(load,30000);
+</script>
+</body></html>
